@@ -1,0 +1,21 @@
+{
+  "name": "Grandmaster",
+  "version": "0.0.1",
+  "main": "wavelength.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "env-cmd .env yarn run hubot --name Grandmaster -a slack",
+    "startdiscord": "env-cmd .env yarn run hubot --name Grandmaster -a discobot",
+    "dev": "env-cmd .env yarn run hubot --name Grandmaster"
+  },
+  "dependencies": {
+    "@slack/client": "^5.0.2",
+    "env-cmd": "8.0.2",
+    "hubot": "^3.3.2",
+    "hubot-discobot": "^1.0.2",
+    "hubot-discord": "^2.1.0",
+    "hubot-slack": "^4.7.1",
+    "jimp": "^0.9.6",
+    "slack": "^11.0.2"
+  }
+}
