@@ -418,5 +418,15 @@ module.exports = async function (robot) {
     const board = await makeBoard(gaugeAngle, armAngle, scale);
     const channel = await robot.client.channels.get(res.message.room);
     await channel.send('', { files: [board] });
+    const delta = Math.abs(armAngle - gaugeAngle);
+    let score = 0;
+    if (delta <= 4) {
+      score = 4;
+    } else if (delta <= 12) {
+      score = 3;
+    } else if (delta <= 20) {
+      score = 2;
+    }
+    await channel.send(`A score of ${score} points!`);
   });
 };
