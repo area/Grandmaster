@@ -4,9 +4,7 @@ const util = require('util');
 
 module.exports = async function (robot) {
   const PI = 3.14159;
-  let armAngle = 0;
-  let gaugeAngle;
-  let scale;
+  const games = {};
 
   const scales = [
     ['Bad', 'Good'],
@@ -263,25 +261,6 @@ module.exports = async function (robot) {
     ['Underrated game', 'Overrated game'],
   ];
 
-  //     robot.hear(/!wavelength (@.*)/, async(res) => {
-  //         if (isPrivateSlackMessage(res)) { return }
-  //         // Generate the gaugeAngle
-  //         gaugeAngle = Math.random() * 80 * (Math.random() < 0.5 ? 1 : -1)
-  //         gaugeAngle = (gaugeAngle + 360) % 360
-  //         console.log(gaugeAngle);
-  //         armAngle = 80;
-  //         scale = scales[Math.floor(Math.random() * scales.length)]
-  //
-  //         board = await makeBoard(gaugeAngle, armAngle, scale)
-  //         console.log(board)
-  //         opts = {
-  //             file: board,
-  //             title: 'Your Prompt',
-  //             channels: res.match[1]
-  //         }
-  //         robot.adapter.client.web.files.upload('wavelength.jpg', opts)
-  //     })
-
   async function makeBoard(_gaugeAngle, _armAngle, _scale) {
     // Load the base image
     const base = await Jimp.read('./assets/wavelength/background.jpg');
@@ -290,23 +269,23 @@ module.exports = async function (robot) {
     const R = 468;
     if (_gaugeAngle) {
       // Have the angle in radians to hand
-      const gaugeAngleRad = (gaugeAngle * PI) / 180;
+      const gaugeAngleRad = (_gaugeAngle * PI) / 180;
 
       // Paste the gauge over that angle
       const gauge = await Jimp.read('./assets/wavelength/dial2larger.png');
 
 
-      if (gaugeAngle >= 0 && gaugeAngle <= 80) {
-        gauge.rotate(gaugeAngle);
+      if (_gaugeAngle >= 0 && _gaugeAngle <= 80) {
+        gauge.rotate(_gaugeAngle);
         const x = R * Math.sin(gaugeAngleRad) + c * Math.cos(gaugeAngleRad) - c;
         const y = R - R * Math.cos(gaugeAngleRad) - c * Math.sin(gaugeAngleRad);
 
         base.blit(gauge, 360 - x, y - 40);
-      } else if (gaugeAngle >= 280 && gaugeAngle < 360) {
+      } else if (_gaugeAngle >= 280 && _gaugeAngle < 360) {
         // TODO: This (and the equivalent with the arm angle) is a dirty, dirty hack because I've
         // not cracked the maths yet.
         gauge.flip(true, false);
-        gauge.rotate(360 - gaugeAngle);
+        gauge.rotate(360 - _gaugeAngle);
 
         const x = R * Math.sin(2 * PI - gaugeAngleRad) + c * Math.cos(2 * PI - gaugeAngleRad) - c;
         const y = R - R * Math.cos(gaugeAngleRad) + c * Math.sin(gaugeAngleRad);
@@ -332,16 +311,16 @@ module.exports = async function (robot) {
     const nub = await Jimp.read('./assets/wavelength/nub.png');
     base.blit(nub, 360 - nub.bitmap.width / 2 + c, R - nub.bitmap.height / 2 - 40);
 
-    if (armAngle) {
+    if (_armAngle) {
       // add the arm
       const arm = await Jimp.read('./assets/wavelength/arm.png');
       arm.resize(4, 420);
-      const armangle = parseFloat(_armAngle);
+      _armangle = parseFloat(_armAngle);
 
-      arm.rotate(armangle);
-      if (armangle >= 0 && armangle <= 80) {
+      arm.rotate(_armAngle);
+      if (_armAngle >= 0 && _armAngle <= 80) {
         base.blit(arm, 360 - arm.bitmap.width + c, R - arm.bitmap.height - 40);
-      } else if (armangle >= 280 && armangle < 360) {
+      } else if (_armAngle >= 280 && _armAngle < 360) {
         base.blit(arm, 360 + c, R - arm.bitmap.height - 40);
       } else {
         return;
@@ -378,12 +357,13 @@ module.exports = async function (robot) {
   }
 
   robot.hear(/!w <@!(.*)>/, async (res) => {
+    const { room } = res.message;
     // Generate the gaugeAngle
-    gaugeAngle = Math.random() * 80 * (Math.random() < 0.5 ? 1 : -1);
+    let gaugeAngle = Math.random() * 80 * (Math.random() < 0.5 ? 1 : -1);
     gaugeAngle = (gaugeAngle + 360) % 360;
-    armAngle = 80;
-    scale = scales[Math.floor(Math.random() * scales.length)];
-
+    const armAngle = 80;
+    const scale = scales[Math.floor(Math.random() * scales.length)];
+    games[room] = { gaugeAngle, armAngle, scale };
     const board = await makeBoard(gaugeAngle, armAngle, scale);
     const user = robot.client.users.get(res.match[1]);
     await user.send("Here's your prompt! Good luck!", { files: [board] });
@@ -399,6 +379,10 @@ module.exports = async function (robot) {
 
 
   robot.hear(/!w ([+-][0-9]*)/, async (res) => {
+    const { room } = res.message;
+    let { armAngle } = games[room];
+    const { scale } = games[room];
+
     const delta = -parseFloat(res.match[1]);
     if (armAngle <= 80 && armAngle + delta > 80) {
       armAngle = 80;
@@ -409,12 +393,18 @@ module.exports = async function (robot) {
     } else {
       armAngle = (armAngle + delta + 360) % 360;
     }
+    games[room].armAngle = armAngle;
+
     const board = await makeBoard(null, armAngle, scale);
     const channel = await robot.client.channels.get(res.message.room);
     await channel.send('', { files: [board] });
   });
 
   robot.hear(/!w reveal/, async (res) => {
+    const { room } = res.message;
+
+    const { armAngle, scale, gaugeAngle } = games[room];
+
     const board = await makeBoard(gaugeAngle, armAngle, scale);
     const channel = await robot.client.channels.get(res.message.room);
     await channel.send('', { files: [board] });

@@ -49,7 +49,6 @@ module.exports = async function (robot) {
     const m = res.match[0];
     let names = m.split(/\s/)
     names.shift();
-    console.log(names);
     for (i in names){
       name = names[i];
       if (!/^<@!?([0-9]*)>$/.test(name)) { return } else {
@@ -69,7 +68,6 @@ module.exports = async function (robot) {
       if (x.deleted) { return }
       if (isTeamName(x.name)) {
         await x.setName(randomTeam());
-        // TODO: Remove users from this team
         await Promise.all(x.members.map(async member => member.removeRole(x.id)));
         foundTeams += 1
         teams.push(x)
