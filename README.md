@@ -8,6 +8,9 @@ Unable to play board games in person, I thought a Discord Bot might be able to h
 
 ## Features:
 ### Wavelength
+
+[With permission from the creator](https://twitter.com/AlxHague/status/1244988021587488774) of the fantastic [Wavelength](https://wavelength.zone), this bot's _raison d'être_ is to make playing games of Wavelength easy via a Discord server. None of these functions are permissioned, so make sure you're not playing in a room with griefers...
+
 #### Generate the prompt
 ```
 !w @username
