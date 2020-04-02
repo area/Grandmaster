@@ -13,6 +13,7 @@ Unable to play board games in person, I thought a Discord Bot might be able to h
 !w @username
 ```
 ![Prompt](./assets/wavelength/prompt.png)
+
 PM's the tagged user with a clue and a gauge. Do this from the room you want to run the game in.
 
 #### Adjust the dial
@@ -20,6 +21,7 @@ PM's the tagged user with a clue and a gauge. Do this from the room you want to 
 !w +10
 ```
 ![Adjust](./assets/wavelength/adjust.png)
+
 In the room the game is running in, adjusts the dial by 10 degrees clockwise. Similarly, you can use -10 to reduce it by ten degrees. You can use any number, not just 10. No absolute figures though, only adjustments!
 
 #### Reveal the answer
@@ -47,6 +49,6 @@ To add this to your Discord server... we don't know yet.
 
 ## Credits
 
-[@area](https://github.com/area/)
-[@practual](https://github.com/practual/)
-[@ChrisEngland](https://github.com/ChrisEngland/)
+* [@area](https://github.com/area/)
+* [@practual](https://github.com/practual/)
+* [@ChrisEngland](https://github.com/ChrisEngland/)
