@@ -315,12 +315,12 @@ module.exports = async function (robot) {
       // add the arm
       const arm = await Jimp.read('./assets/wavelength/arm.png');
       arm.resize(4, 420);
-      _armangle = parseFloat(_armAngle);
+      const armAngle = parseFloat(_armAngle);
 
-      arm.rotate(_armAngle);
-      if (_armAngle >= 0 && _armAngle <= 80) {
+      arm.rotate(armAngle);
+      if (armAngle >= 0 && armAngle <= 80) {
         base.blit(arm, 360 - arm.bitmap.width + c, R - arm.bitmap.height - 40);
-      } else if (_armAngle >= 280 && _armAngle < 360) {
+      } else if (armAngle >= 280 && armAngle < 360) {
         base.blit(arm, 360 + c, R - arm.bitmap.height - 40);
       } else {
         return;
@@ -356,7 +356,7 @@ module.exports = async function (robot) {
     return img;
   }
 
-  robot.hear(/!w <@!(.*)>/, async (res) => {
+  robot.hear(/^!w <@!(.*)>/, async (res) => {
     const { room } = res.message;
     // Generate the gaugeAngle
     let gaugeAngle = Math.random() * 80 * (Math.random() < 0.5 ? 1 : -1);
@@ -378,7 +378,7 @@ module.exports = async function (robot) {
   }
 
 
-  robot.hear(/!w ([+-][0-9]*)/, async (res) => {
+  robot.hear(/^!w ([+-][0-9]*)/, async (res) => {
     const { room } = res.message;
     let { armAngle } = games[room];
     const { scale } = games[room];
@@ -400,7 +400,7 @@ module.exports = async function (robot) {
     await channel.send('', { files: [board] });
   });
 
-  robot.hear(/!w reveal/, async (res) => {
+  robot.hear(/^!w reveal/, async (res) => {
     const { room } = res.message;
 
     const { armAngle, scale, gaugeAngle } = games[room];

@@ -30,7 +30,7 @@ module.exports = async function (robot) {
     return array;
   }
 
-  robot.hear(/!teams clear/, async (res) => {
+  robot.hear(/^!teams clear/, async (res) => {
     const guild = robot.client.guilds.get(robot.adapter.rooms[res.message.room].guild.id);
     await Promise.all(guild.roles.map(async function (x) {
       if (x.deleted) { return }
@@ -40,7 +40,7 @@ module.exports = async function (robot) {
     }));
   });
 
-  robot.hear(/!teams (.*)/, async (res) => {
+  robot.hear(/^!teams (.*)/, async (res) => {
     // Get the list of existing teams
     // console.log(res)
     // console.log(robot.client)
@@ -90,7 +90,6 @@ module.exports = async function (robot) {
 
     // Randomly assign everyone mentioned to the two teams
     names = shuffleArray(names)
-    console.log('shuffled', names)
     // Get names from msg
     for (i in names) {
       team = teams[i%2];
