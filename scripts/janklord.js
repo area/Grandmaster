@@ -10,7 +10,7 @@ module.exports = async function (robot) {
       while (results.indexOf(result.name) != -1){
         result = await scryfall.get("/cards/random/", {q: "is:commander"})
       }
-      res.send(result.name + " - " + result.uri)
+      res.send(result.name + " - " + result.scryfall_uri.replace("?utm_source=api", ""))
       results.push(result.name)
     }
   });
