@@ -46,6 +46,12 @@ Randomly divide the supplied users as evenly as possible in to two teams (roles)
 ```
 Remove all users from teams.
 
+### Janklord generator
+```
+!jank n
+```
+Where `n` is 1-5. Will return `n` legal commanders for a game of [EDH](https://mtgcommander.net/).
+
 ## Installation
 
 To add this to your Discord server we think you just have to click [here](https://discordapp.com/oauth2/authorize?client_id=691008194201518130&permissions=268470272&scope=bot) but we're not totally sure! If you have trouble then feel free to ask for help in [this Discord](https://discord.gg/VdvmsaK).

@@ -16,6 +16,7 @@
     "hubot-discord": "^2.1.0",
     "hubot-slack": "^4.7.1",
     "jimp": "^0.9.6",
+    "scryfall-client": "^0.18.5",
     "slack": "^11.0.2"
   },
   "devDependencies": {
